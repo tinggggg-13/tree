@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>存心樹洞｜三好四給 AI 心情陪伴</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <h1>存心<span>樹洞</span></h1>
+      <p>存下心情，收下溫暖，再把好心傳出去</p>
+    </div>
+    <div class="pills">
+      <span class="pill">三好：<b>做好事・說好話・存好心</b></span>
+      <span class="pill ai-badge"><span class="dot" id="aiDot"></span><span id="aiText">連線中…</span></span>
+    </div>
+  </header>
+
+  <div class="grid">
+    <main>
+      <section class="card" aria-labelledby="writeTitle">
+        <h2 id="writeTitle">今天的心情</h2>
+        <p class="sub">這裡沒有標準答案。寫多寫少都可以，只有你看得到。</p>
+        <div class="moods" id="moods" role="group" aria-label="心情標籤"></div>
+        <label for="moodText" class="hint" style="display:none">心情內容</label>
+        <textarea id="moodText" placeholder="例如：今天報告被老師說不夠完整，覺得自己很努力了卻還是不夠好⋯⋯"></textarea>
+        <div class="row">
+          <span class="hint">Ctrl / ⌘ + Enter 送出</span>
+          <button class="btn" id="sendBtn">放進樹洞</button>
+        </div>
+      </section>
+
+      <section class="card" id="response" aria-live="polite">
+        <h2>樹洞的回應</h2>
+        <div id="respBody"></div>
+      </section>
+
+      <section class="card" id="mailbox" aria-labelledby="mbTitle">
+        <div class="mb-head">
+          <h2 id="mbTitle">📮 好話信箱</h2>
+          <span class="pill" id="mbStats">寄出 0・送達 0・被感謝 0</span>
+        </div>
+        <p class="sub">完成一個四給任務，就能寄一句好話給一位陌生的樹洞夥伴；你也可能收到別人寄來的好話。</p>
+        <div class="rules">
+          <b>匿名・單向・只寄善意</b>：看不到彼此是誰，也不能回覆、私訊或加好友。請不要留下聯絡方式或個人資訊。
+          每句好話寄出前都會經過 <b>AI 善意檢查</b>，收到不舒服的話可以一鍵檢舉。
+        </div>
+        <div id="inboxArea"></div>
+        <div class="composer" id="composer">
+          <div class="comp-head">
+            <b>寫一句好話給陌生人</b>
+            <span class="credit" id="creditBadge"></span>
+          </div>
+          <div class="moods" id="letterCats" role="group" aria-label="這句好話屬於四給的哪一種"></div>
+          <textarea id="letterText" maxlength="60" placeholder="例如：不管今天過得怎麼樣，你願意撐到現在就很了不起。" aria-label="好話內容"></textarea>
+          <div class="row">
+            <span><button class="linkbtn" id="ideaBtn">給我一點靈感</button><span class="hint" id="letterCount">0 / 60</span></span>
+            <button class="btn" id="sendLetterBtn">寄出好話</button>
+          </div>
+          <div class="mod" id="modMsg" aria-live="polite"></div>
+        </div>
+        <details class="hist" style="margin-top:16px">
+          <summary>我收到的好話（<span id="cntInbox">0</span>）</summary>
+          <div id="inboxList"></div>
+        </details>
+      </section>
+
+      <section class="card" aria-labelledby="taskTitle">
+        <h2 id="taskTitle">我的四給任務</h2>
+        <p class="sub">完成任務就打卡，好心樹會長出一片新葉子。</p>
+        <div class="tabs" role="tablist">
+          <button class="tab" role="tab" aria-selected="true" data-tab="pending">進行中 <span id="cntPending">0</span></button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="done">已完成 <span id="cntDone">0</span></button>
+        </div>
+        <div class="tasks" id="taskList"></div>
+      </section>
+
+      <section class="card">
+        <details class="hist">
+          <summary>我的心情紀錄（<span id="cntEntries">0</span>）</summary>
+          <div id="history"></div>
+        </details>
+      </section>
+    </main>
+
+    <aside class="tree-col">
+      <section class="card tree-card" aria-labelledby="treeLevel">
+        <div class="tree-head">
+          <div class="level" id="treeLevel">種子</div>
+          <div class="next" id="treeNext"></div>
+        </div>
+        <svg id="tree" viewBox="0 0 400 400" role="img" aria-label="我的好心樹">
+          <defs>
+            <radialGradient id="sun" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#ffe9c2" stop-opacity=".9"/>
+              <stop offset="100%" stop-color="#ffe9c2" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="bark" x1="0" x2="1">
+              <stop offset="0" stop-color="#7a5636"/><stop offset="1" stop-color="#946a44"/>
+            </linearGradient>
+          </defs>
+          <circle cx="200" cy="170" r="170" fill="url(#sun)"/>
+          <ellipse cx="200" cy="372" rx="150" ry="16" fill="#e3d6bd"/>
+          <ellipse cx="200" cy="370" rx="95" ry="9" fill="#d3c19f"/>
+          <g id="treeGroup"></g>
+        </svg>
+        <div class="leaf-info" id="leafInfo">點一片葉子，看看它是哪一份好心長出來的</div>
+        <div class="stats">
+          <div class="stat"><div class="n" id="sLeaves">0</div><div class="l">好心葉</div></div>
+          <div class="stat"><div class="n" id="sStreak">0</div><div class="l">連續打卡（天）</div></div>
+          <div class="stat"><div class="n" id="sSeeds">0</div><div class="l">樹洞心情</div></div>
+        </div>
+        <div class="fourgive" id="fourGive"></div>
+      </section>
+    </aside>
+  </div>
+
+  <footer>
+    <div class="help">
+      如果你正在經歷很難熬的時刻，請不要一個人撐著。可以找身邊信任的人，或撥打
+      <b>1925 安心專線</b>（24 小時）、<b>1995 生命線</b>、<b>1980 張老師</b>。
+      存心樹洞是陪伴，不是心理諮商。
+    </div>
+    <div>
+      <button id="demoBtn">載入展示資料</button>｜<button id="resetBtn">清除我的資料</button>
+    </div>
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true">
+  <div class="box">
+    <p id="modalText"></p>
+    <div class="acts">
+      <button class="btn ghost small" id="modalNo">取消</button>
+      <button class="btn small" id="modalYes">確定</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
